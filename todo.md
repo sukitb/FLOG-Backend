@@ -7,9 +7,6 @@
 
 https://mongoosejs.com/docs/subdocs.html
 
-offit_admin
-pohtagfamily
-
 [ ] Log-in
 [ ] User
 [ ] post
