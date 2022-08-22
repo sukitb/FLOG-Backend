@@ -1,9 +1,6 @@
 const mongoose = require("mongoose");
-
-const postSchema = new mongoose.Schema({
-  postContent: { type: String},
-  createPostAt: { type: Date},
-});
+const PostModel = require("./post");
+const { Schema } = mongoose;
 
 const activitySchema = new mongoose.Schema({
   title: { type: String, min: 5, max: 20, required: true },
@@ -11,14 +8,12 @@ const activitySchema = new mongoose.Schema({
   image: { type: String, min: 0, max: 10000, required: true },
   createActivityAt: { type: Date, required: true },
   duration: { type: Number, required: true },
-  postInfo: postSchema
+  post: [{
+    type: Schema.Types.ObjectId,
+    ref: "post",
+  }]
 });
 
-// const activitySchema = new mongoose.Schema({
-//   title: {type: String, required: true}
-// })
-
 const ActivityModel = mongoose.model("activity", activitySchema);
-
 
 module.exports = ActivityModel;

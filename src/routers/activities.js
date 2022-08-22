@@ -1,5 +1,6 @@
 const express = require("express");
 const ActivityModel = require("../models/activity");
+const PostModel = require("../models/post")
 
 const router = express.Router();
 
@@ -27,26 +28,33 @@ router.post("/", async (req, res) => {
 });
 
 // add post
-router.put("/:activityId", async (req, res) => {
-  const payload = req.body;
-  console.log(payload);
+router.post("/:activityId/post", async (req, res) => {
   const activityId = req.params.activityId;
-  const post = await ActivityModel.findByIdAndUpdate(activityId, {
-    $push: { postInfo: payload },
-  });
+  console.log(activityId)
+  const activity = await ActivityModel.findById(activityId);
+  const { postContent, createPostAt } = req.body;
+  const post = new PostModel({ postContent, createPostAt })
+  activity.post.push(post)
+  post.activity = activity;
   res.send(post.toJSON());
+  await activity.save()
+  await post.save()
 });
 
 //find each activity
-router.get("/:activityId", async (req, res) => {
+router.get("/post", async (req, res, next) => {
   console.log(req.params);
   const activityId = req.params.activityId;
-  const activity = await ActivityModel.findById(activityId);
-  if (!activity) {
-    res.status(404).end();
-  }
-  res.send(activity.toJSON());
+  const activity = await ActivityModel.findById(activityId).findOne(postInfo)
+  
 });
+
+// get post
+// //todo still can't next to this function
+router.get('/:activityId/', async (req, res) => {
+  const activity = await ActivityModel.findById(req.params.activityId).populate('post')
+  res.send(activity.toJSON())
+})
 
 //edit activity
 router.put("/:activityId", async (req, res) => {
