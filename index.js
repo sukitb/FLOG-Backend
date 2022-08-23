@@ -2,17 +2,17 @@ const express = require('express');
 const { default: mongoose } = require("mongoose");
 const morgan = require('morgan')
 const config = require('./config')
+const cors = require('cors')
 
 //router
 const activityRouter = require('./src/routers/activities');
-
-
 
 const app = express();
 const PORT = 8080;
 
 app.use(express.json())
 app.use(morgan('dev'))
+app.use(cors())
 app.use("/activities", activityRouter);
 
 //middlewares

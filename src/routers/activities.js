@@ -4,16 +4,17 @@ const PostModel = require("../models/post")
 
 const router = express.Router();
 
-const getUserId = (req) => {
-  return "mock-user-id";
-};
+// const getUserId = (req) => {
+//   return "mock-user-id";
+// };
 
 // prefix '/activities'
 
 router.get("/", async (req, res) => {
-  const userId = getUserId(req);
-  const activities = await ActivityModel.find({ userId: userId });
+  // const userId = getUserId(req);
+  const activities = await ActivityModel.find( { post: []} );
   res.send(activities.map((act) => act.toJSON()));
+  
 });
 
 // add activity
