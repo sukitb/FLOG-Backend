@@ -5,7 +5,7 @@ const UserModel = require("../models/user")
 
 const router = express.Router();
 
-// get activity not contain post
+// get activity not contain 
 router.get("/", async (req, res) => {
   const { userId } = req.session
   const activities = await ActivityModel.find({$and: [{user: userId}, { post: []}]});
