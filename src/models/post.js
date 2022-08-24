@@ -3,7 +3,7 @@ const { Schema } = mongoose;
 
 const postSchema = new mongoose.Schema({
   postContent: { type: String },
-  createPostAt: { type: Date },
+  createPostAt: { type: String },
   activity: {
     type: Schema.Types.ObjectId,
     ref: 'activity'

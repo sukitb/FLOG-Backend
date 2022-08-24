@@ -10,12 +10,27 @@ const router = express.Router();
 
 // prefix '/activities'
 
+// get activity not contain post
 router.get("/", async (req, res) => {
   // const userId = getUserId(req);
   const activities = await ActivityModel.find( { post: []} );
   res.send(activities.map((act) => act.toJSON()));
-  
 });
+
+// // get activity contain post
+// router.get("/post", async (req, res, next) => {
+//   // const userId = getUserId(req);
+//   const activities = await ActivityModel.find( { post: {$ne : []} });
+//   res.send(activities.map((act) => act.toJSON()));
+//   next()
+// });
+
+// // get post
+// router.get(":activityId/post", async (req, res) => {
+//   const activityId = req.params.activityId
+//   const post = await ActivityModel.find()
+// })
+
 
 // add activity
 router.post("/", async (req, res) => {
@@ -42,23 +57,15 @@ router.post("/:activityId/post", async (req, res) => {
   await post.save()
 });
 
-//find each activity
-router.get("/post", async (req, res, next) => {
-  console.log(req.params);
-  const activityId = req.params.activityId;
-  const activity = await ActivityModel.findById(activityId).findOne(postInfo)
-  
-});
 
 // get post
-// //todo still can't next to this function
-router.get('/:activityId/', async (req, res) => {
-  const activity = await ActivityModel.findById(req.params.activityId).populate('post')
-  res.send(activity.toJSON())
+router.get('/post', async (req, res) => {
+  const activities = await ActivityModel.find({ post: {$ne : []} }).populate('post')
+  res.send(activities.map((act) => act.toJSON()));
 })
 
 //edit activity
-router.put("/:activityId", async (req, res) => {
+router.put("/:activityId/edit", async (req, res) => {
   const payload = req.body;
   const activityId = req.params.activityId;
   const activity = await ActivityModel.findByIdAndUpdate(activityId, payload);
@@ -70,7 +77,7 @@ router.put("/:activityId", async (req, res) => {
 });
 
 //delete activity
-router.delete("/:activityId", async (req, res) => {
+router.delete("/:activityId/delete", async (req, res) => {
   const activityId = req.params.activityId;
   const deleted = await ActivityModel.findByIdAndDelete(activityId);
   if (deleted === null) {
