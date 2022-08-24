@@ -21,16 +21,17 @@ if (config.isVercel) {
   }
 
   app.use(bodyParser.json());
+  app.set('trust proxy', true)
 
   app.use(
     cors({
-      origin: ['http://localhost:5173', 'https://offit.vercel.app/'],
+      origin: 'https://offit.vercel.app/',
       credentials: true,
       optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
     })
   );
 
-app.set('trust proxy', true)
+
 app.use(express.json())
 app.use(morgan('dev'))
 app.use("/users", userRouter)
