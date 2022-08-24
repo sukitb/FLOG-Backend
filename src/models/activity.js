@@ -11,7 +11,11 @@ const activitySchema = new mongoose.Schema({
   post: [{
     type: Schema.Types.ObjectId,
     ref: "post",
-  }]
+  }],
+  user: {
+    type: Schema.Types.ObjectId,
+    ref: 'user'
+  }
 });
 
 const ActivityModel = mongoose.model("activity", activitySchema);
