@@ -6,6 +6,7 @@ const cors = require('cors')
 
 //router
 const activityRouter = require('./src/routers/activities');
+const userRouter = require('./src/routers/users')
 
 const app = express();
 const PORT = 8080;
@@ -13,6 +14,7 @@ const PORT = 8080;
 app.use(express.json())
 app.use(morgan('dev'))
 app.use(cors())
+app.use("/", userRouter)
 app.use("/activities", activityRouter);
 
 //middlewares
