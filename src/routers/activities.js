@@ -1,46 +1,30 @@
 const express = require("express");
 const ActivityModel = require("../models/activity");
 const PostModel = require("../models/post")
+const UserModel = require("../models/user")
 
 const router = express.Router();
 
-// const getUserId = (req) => {
-//   return "mock-user-id";
-// };
-
-// prefix '/activities'
-
 // get activity not contain post
 router.get("/", async (req, res) => {
-  // const userId = getUserId(req);
-  const activities = await ActivityModel.find( { post: []} );
+  const { userId } = req.session
+  const activities = await ActivityModel.find({$and: [{user: userId}, { post: []}]});
   res.send(activities.map((act) => act.toJSON()));
 });
-
-// // get activity contain post
-// router.get("/post", async (req, res, next) => {
-//   // const userId = getUserId(req);
-//   const activities = await ActivityModel.find( { post: {$ne : []} });
-//   res.send(activities.map((act) => act.toJSON()));
-//   next()
-// });
-
-// // get post
-// router.get(":activityId/post", async (req, res) => {
-//   const activityId = req.params.activityId
-//   const post = await ActivityModel.find()
-// })
 
 
 // add activity
 router.post("/", async (req, res) => {
-  const activity = new ActivityModel(req.body);
-  const validateResult = activity.validateSync();
-  if (validateResult) {
-    return res.status(400).send(validateResult);
-  }
-  await activity.save();
-  return res.send(activity.toJSON());
+  const { userId } = req.session
+  const user = await UserModel.findById(userId);
+  const { title, image, hours, duration, createActivityAt, youtubeUrl } = req.body;
+  const activity = new ActivityModel({title, image, hours, duration,createActivityAt, youtubeUrl})
+  user.activity.push = activity
+  activity.user = user;
+  res.send(`success`);
+  await user.save()
+  await activity.save()
+  
 });
 
 // add post
@@ -60,7 +44,10 @@ router.post("/:activityId/post", async (req, res) => {
 
 // get post
 router.get('/post', async (req, res) => {
-  const activities = await ActivityModel.find({ post: {$ne : []} }).populate('post')
+  const { userId } = req.session
+  const activities = await ActivityModel.find(
+    {$and: [{user: userId}, {post: {$ne : []}}]}
+    ).populate('post')
   res.send(activities.map((act) => act.toJSON()));
 })
 
